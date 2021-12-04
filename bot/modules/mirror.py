@@ -253,12 +253,10 @@ class MirrorListener(listeners.MirrorListeners):
             return
         with download_dict_lock:
             msg = f'<b>Name: </b><code>{download_dict[self.uid].name()}</code>\n\n<b>Size: </b>{size}'
+            msg += f'\n\n<b>Type: </b>{typ}'
             if os.path.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'):
-                msg += '\n\n<b>Type: </b>Folder'
                 msg += f'\n<b>SubFolders: </b>{folders}'
                 msg += f'\n<b>Files: </b>{files}'
-            else:
-                msg += f'\n\n<b>Type: </b>{typ}'
             buttons = button_build.ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)
@@ -390,11 +388,14 @@ def _mirror(bot, update, isZip=False, extract=False, isQbit=False, isLeech=False
     LOGGER.info(link)
     gdtot_link = bot_utils.is_gdtot_link(link)
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link):
-        help_msg = "➧ 𝐒𝐞𝐧𝐝 𝐥𝐢𝐧𝐤 𝐜𝐨𝐦𝐦𝐚𝐧𝐝 𝐥𝐢𝐧𝐞 𝐨𝐫 𝐛𝐲 𝐫𝐞𝐩𝐥𝐲\n"
-        help_msg += "➧ <b>𝐄𝐱𝐚𝐦𝐩𝐥𝐞𝐬:</b> \n<code>/command</code> link |newname [ 𝚃𝙶 𝚏𝚒𝚕𝚎𝚜 𝚘𝚛 𝙳𝚒𝚛𝚎𝚌𝚝 𝙻𝚒𝚗𝚔𝚜 ] pswd: mypassword [ 𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙 ]"
-        help_msg += "\n➧ 𝐑𝐞𝐩𝐥𝐲𝐢𝐧𝐠 𝐭𝐨 𝐥𝐢𝐧𝐤: <code>/command</code> |newname [ 𝚃𝙶 𝚏𝚒𝚕𝚎𝚜 𝚘𝚛 𝙳𝚒𝚛𝚎𝚌𝚝 𝙻𝚒𝚗𝚔𝚜 ] pswd: mypassword [ 𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙 ]"
-        help_msg += "\n➧ 𝐃𝐢𝐫𝐞𝐜𝐭 𝐋𝐢𝐧𝐤𝐬 𝐀𝐮𝐭𝐡𝐨𝐫𝐢𝐳𝐚𝐭𝐢𝐨𝐧:  <code>/command</code> link |newname pswd: mypassword\nusername\npassword [ 𝚁𝚎𝚙𝚕𝚢𝚒𝚗𝚐 𝚝𝚘 𝙻𝚒𝚗𝚔 ]"
-        help_msg += "\n➧ 𝐒𝐞𝐥𝐞𝐜𝐭𝐢𝐨𝐧: <code>/qbcommand</code> 𝐬 𝐥𝐢𝐧𝐤 [ 𝚁𝚎𝚙𝚕𝚢𝚒𝚗𝚐 𝚝𝚘 𝙻𝚒𝚗𝚔 ]"
+        help_msg = "<b>Send link along with command line:</b>"
+        help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙]"
+        help_msg += "\n\n<b>By replying to link or file:</b>"
+        help_msg += "\n<code>/command</code> |newname pswd: mypassword [𝚣𝚒𝚙/𝚞𝚗𝚣𝚒𝚙]"
+        help_msg += "\n\n<b>Direct link authorization:</b>"
+        help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword\nusername\npassword"
+        help_msg += "\n\n<b>Qbittorrent selection:</b>"
+        help_msg += "\n<code>/qbcommand</code> <b>s</b> {link} or by replying to {file}"
         return sendMessage(help_msg, bot, update)
     elif bot_utils.is_url(link) and not bot_utils.is_magnet(link) and not os.path.exists(link) and isQbit:
         try:
